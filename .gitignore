@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.RProj
+libs/
+data/
+*.png
+*.pdf
+*.html
+.DS_Store
