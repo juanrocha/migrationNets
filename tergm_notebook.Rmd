@@ -26,9 +26,9 @@ Load IDP flow data
 
 ```{r}
 # Laptop directory
-dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/ERGM/Code/data/monthly/"
+dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/Code/data"
 # Office PC directory
-# dir.data <- "C:/Users/Woi Sok Oh/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/ERGM/Code/data/monthly"
+# dir.data <- "C:/Users/Woi Sok Oh/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/Code/data"
 fls <- dir_ls(dir.data)
 fls <- fls |> str_subset("idp")
 out <- map(fls, read_csv, skip = 0, col_names = 1:74)
@@ -36,11 +36,6 @@ class(out) # list
 length(out) # 60
 out <- map(out, function(x) as.matrix(x))
 for (k in 1:60){diag(out[[k]]) <- 0}
-nanlist <-read_csv("./data/monthly/nan.csv", skip = 1, col_names = 1:74)
-class(nanlist)
-length(nanlist)
-nanlist <- as.matrix(nanlist)
-
 ```
 
 Load attribute data
@@ -107,13 +102,7 @@ for (i in 1:60){
   # build a network
   net <- network(out[[i]],directed = TRUE,loops = FALSE,matrix.type="adjacency")
   net %e% "flow" <- out[[i]] 
-  if (i <= 3){
-    net %e% "pastflow" <- nanlist
-  } else {
-    mem <- out[[i-1]] + out[[i-2]] + out[[i-3]]
-    mem <- (mem > 0)*1
-    net %e% "pastflow" <- mem
-  }
+  
   
   net %v% "tot_con_occ" <- dat$tot_con_occ
   net %v% "tot_con_fat" <- dat$tot_con_fat
