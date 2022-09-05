@@ -1,0 +1,290 @@
+---
+title: "TERGM for Somali IDP networks"
+output: tergm_notebook
+---
+
+Load libraries
+
+```{r}
+library("tergm")
+library("texreg")
+#library("xergm")
+#library("btergm")
+library("tsna")
+library("ndtv")
+library("statnet")
+library("htmlwidgets")
+library("latticeExtra")
+library("tidyverse")
+library("igraph")
+library("fs")
+library("tictoc")
+library("RSiena")
+```
+
+Load IDP flow data
+
+```{r}
+# Laptop directory
+dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/ERGM/Code/data/monthly/"
+# Office PC directory
+# dir.data <- "C:/Users/Woi Sok Oh/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/ERGM/Code/data/monthly"
+fls <- dir_ls(dir.data)
+fls <- fls |> str_subset("idp")
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out) # list
+length(out) # 60
+out <- map(out, function(x) as.matrix(x))
+for (k in 1:60){diag(out[[k]]) <- 0}
+nanlist <-read_csv("./data/monthly/nan.csv", skip = 1, col_names = 1:74)
+class(nanlist)
+length(nanlist)
+nanlist <- as.matrix(nanlist)
+
+```
+
+Load attribute data
+
+```{r}
+fls <- dir_ls(dir.data)
+fls <- fls |> str_subset("var")
+att <- map(fls, read_csv)
+```
+
+Link attributes to nodes
+
+```{r}
+nets <- list()
+for (i in 1:60){
+  # att
+  att2 <- map2(.x = att, .y = i, function(x,y) {x$month <- y; return(x)})
+  att3 <-bind_rows(att2)
+  dat <- att3 |> group_by(id) |>
+    summarize(
+      tot_con_occ = tot_con_occ,
+      tot_con_fat = tot_con_fat,
+      batt_occ = batt_occ,
+      batt_fat = batt_fat,
+      civi_occ = civi_occ,
+      civi_fat = civi_fat,
+      expl_occ = expl_occ,
+      expl_fat = expl_fat,
+      prot_occ = prot_occ,
+      prot_fat = prot_fat,
+      riot_occ = riot_occ,
+      riot_fat = riot_fat,
+      stra_occ = stra_occ,
+      stra_fat = stra_fat,
+      spi0 = spi0,
+      spi1 = spi1,
+      spi2 = spi2,
+      spi3 = spi3,
+      dry = dry,
+      mod_dry = mod_dry,
+      ext_dry = ext_dry,
+      wet = wet,
+      mod_wet = mod_wet,
+      ext_wet = ext_wet,
+      pop = pop,
+      chirps0 = chirps0,
+      chirps1 = chirps1,
+      chirps2 = chirps2,
+      chirps3 = chirps3,
+      ndvi0 = ndvi0,
+      ndvi1 = ndvi1,
+      ndvi2 = ndvi2,
+      ndvi3 = ndvi3,
+      avgrain0 = avgrain0,
+      avgrain1 = avgrain1,
+      avgrain2 = avgrain2,
+      avgrain3 = avgrain3,
+      norain0 = norain0,
+      norain1 = norain1,
+      norain2 = norain2,
+      norain3 = norain3,
+      
+    )
+  # build a network
+  net <- network(out[[i]],directed = TRUE,loops = FALSE,matrix.type="adjacency")
+  net %e% "flow" <- out[[i]] 
+  if (i <= 3){
+    net %e% "pastflow" <- nanlist
+  } else {
+    mem <- out[[i-1]] + out[[i-2]] + out[[i-3]]
+    mem <- (mem > 0)*1
+    net %e% "pastflow" <- mem
+  }
+  
+  net %v% "tot_con_occ" <- dat$tot_con_occ
+  net %v% "tot_con_fat" <- dat$tot_con_fat
+  net %v% "batt_occ" <- dat$batt_occ
+  net %v% "batt_fat" <- dat$batt_fat
+  net %v% "civi_occ" <- dat$civi_occ
+  net %v% "civi_fat" <- dat$civi_fat
+  net %v% "expl_occ" <- dat$expl_occ
+  net %v% "expl_fat" <- dat$expl_fat
+  net %v% "prot_occ" <- dat$prot_occ
+  net %v% "prot_fat" <- dat$prot_fat
+  net %v% "riot_occ" <- dat$riot_occ
+  net %v% "riot_fat" <- dat$riot_fat
+  net %v% "stra_occ" <- dat$stra_occ
+  net %v% "stra_fat" <- dat$stra_fat
+  net %v% "spi0" <- dat$spi0
+  net %v% "spi1" <- dat$spi1
+  net %v% "spi2" <- dat$spi2
+  net %v% "spi3" <- dat$spi3
+  net %v% "dry" <- dat$dry
+  net %v% "mod_dry" <- dat$mod_dry
+  net %v% "ext_dry" <- dat$ext_dry
+  net %v% "wet" <- dat$wet
+  net %v% "mod_wet" <- dat$mod_wet
+  net %v% "ext_wet" <- dat$ext_wet
+  net %v% "pop" <- dat$pop
+  net %v% "chirps0" <- dat$chirps0
+  net %v% "chirps1" <- dat$chirps1
+  net %v% "chirps2" <- dat$chirps2
+  net %v% "chirps3" <- dat$chirps3
+  net %v% "ndvi0" <- dat$ndvi0
+  net %v% "ndvi1" <- dat$ndvi1
+  net %v% "ndvi2" <- dat$ndvi2
+  net %v% "ndvi3" <- dat$ndvi3
+  net %v% "avgrain0" <- dat$avgrain0
+  net %v% "avgrain1" <- dat$avgrain1
+  net %v% "avgrain2" <- dat$avgrain2
+  net %v% "avgrain3" <- dat$avgrain3
+  net %v% "norain0" <- dat$norain0
+  net %v% "norain1" <- dat$norain1
+  net %v% "norain2" <- dat$norain2
+  net %v% "norain3" <- dat$norain3
+  
+  nets[[i]] <- net
+}
+```
+
+Develop a TERGM
+
+Initial model
+
+```{r}
+tic()
+nw.fit.fp1 <- tergm(nets ~ edges,
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 6.92 sec in laptop
+summary(nw.fit.fp1)
+
+```
+
+Model 2: Conflict diff model
+
+```{r}
+tic()
+nw.fit.fp2 <- tergm(nets ~ edges + diff("tot_con_occ") +diff("batt_occ")+diff("civi_occ")+diff("expl_occ")+diff("prot_occ")+diff("riot_occ")+diff("stra_occ")+diff("tot_con_fat")+diff("batt_fat")+diff("civi_fat")+diff("expl_fat")+diff("prot_fat")+diff("riot_fat")+diff("stra_fat"),
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 8.61 sec in laptop
+summary(nw.fit.fp2)
+
+tic()
+nw.fit.fp2_1 <- tergm(nets ~ edges + diff("riot_occ") + diff("riot_fat"),
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 9.37 sec in laptop
+summary(nw.fit.fp2_1)
+
+tic()
+nw.fit.fp2_2 <- tergm(nets ~ edges + diff("stra_occ") + diff("stra_fat"),
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 8.14 sec in laptop
+summary(nw.fit.fp2_2)
+```
+
+Model 3: climate variable diff model
+Environmental/Climate data (number stands for time lag, e.g., 1 means that it is monthly data of a previous year)
+- SPI : Standard precipitation index (based on CHIRPS precipitation data in this case)
+- CHIRPS : Monthly precipitation data
+- NDVI : Normalized Difference Vegetation Index
+- norain : Percentage of no-rainfall days each month (based on CHIRPS data)
+- avgrain : monthly precipitation / rainfall days
+
+```{r}
+tic()
+nw.fit.fp3 <- tergm(nets ~ edges+diff("spi0")+diff("spi1")+diff("spi2")+diff("spi3")+diff("chirps0")+diff("chirps1")+diff("chirps2")+diff("chirps3")+diff("ndvi0")+diff("ndvi1")+diff("ndvi2")+diff("ndvi3")+diff("norain0")+diff("norain1")+diff("norain2")+diff("norain3")+diff("avgrain0")+diff("avgrain1")+diff("avgrain2")+diff("avgrain3"),
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 11.67 sec in laptop
+summary(nw.fit.fp3)
+```
+
+Separable model
+
+```{r}
+tic()
+nw.fit.sfp1 <- tergm(nets ~ 
+                       Form(~edges) +
+                       Persist(~edges),
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 11.45 sec in laptop
+summary(nw.fit.sfp1)
+```
+
+Separable Model 2: mutual and transitive triads
+
+```{r}
+tic()
+nw.fit.sfp2 <- tergm(nets ~
+                      Form(~edges+mutual+transitiveties) +
+                      Persist(~edges+mutual+transitiveties),
+                    estimate = "CMLE",
+                    times = c(1:60)
+)
+toc() # 1560.03 sec in laptop
+summary(nw.fit.sfp2)
+```
+
+Separable Model 3: differences of conflict attributes
+
+```{r}
+# occurrence
+tic()
+nw.fit.sfp3 <- tergm(nets ~
+                      Form(~edges+diff("tot_con_occ")+diff("batt_occ")+diff("civi_occ")+diff("expl_occ")+diff("prot_occ")+diff("riot_occ")+diff("stra_occ")+diff("tot_con_fat")+diff("batt_fat")+diff("civi_fat")+diff("expl_fat")+diff("prot_fat")+diff("riot_fat")+diff("stra_fat")) +
+                      Persist(~edges+diff("tot_con_occ")+diff("batt_occ")+diff("civi_occ")+diff("expl_occ")+diff("prot_occ")+diff("riot_occ")+diff("stra_occ")+diff("tot_con_fat")+diff("batt_fat")+diff("civi_fat")+diff("expl_fat")+diff("prot_fat")+diff("riot_fat")+diff("stra_fat")),
+                    estimate = "CMLE",
+                    times = c(1:60)
+)
+toc() # 16.12 sec in laptop
+summary(nw.fit.sfp3)
+
+```
+
+Model 4: differences of precipitation attributes
+
+```{r}
+tic()
+nw.fit.sfp4 <- tergm(nets ~
+                      Form(~edges+diff("spi0")+diff("spi1")+diff("spi2")+diff("spi3")+diff("chirps0")+diff("chirps1")+diff("chirps2")+diff("chirps3")+diff("ndvi0")+diff("ndvi1")+diff("ndvi2")+diff("ndvi3")+diff("norain0")+diff("norain1")+diff("norain2")+diff("norain3")+diff("avgrain0")+diff("avgrain1")+diff("avgrain2")+diff("avgrain3")) +
+                      Persist(~edges+diff("spi0")+diff("spi1")+diff("spi2")+diff("spi3")+diff("chirps0")+diff("chirps1")+diff("chirps2")+diff("chirps3")+diff("ndvi0")+diff("ndvi1")+diff("ndvi2")+diff("ndvi3")+diff("norain0")+diff("norain1")+diff("norain2")+diff("norain3")+diff("avgrain0")+diff("avgrain1")+diff("avgrain2")+diff("avgrain3")),
+                    estimate = "CMLE",
+                    times = c(1:100)
+)
+toc() # 27.51 sec in laptop
+summary(nw.fit.sfp4)
+```
+
+Model 5: 
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
