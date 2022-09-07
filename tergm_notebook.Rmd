@@ -97,7 +97,7 @@ for (i in 1:60){
       norain1 = norain1,
       norain2 = norain2,
       norain3 = norain3,
-      clan = clan,
+      clan = clans,
       alsha_occ = alsha_occ,
       alsha_fat = alsha_fat,
       fatcon_occ = fatcon_occ,
