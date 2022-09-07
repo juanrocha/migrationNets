@@ -26,9 +26,9 @@ Load IDP flow data
 
 ```{r}
 # Laptop directory
-dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/Code/data"
+# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/Code/data"
 # Office PC directory
-# dir.data <- "C:/Users/Woi Sok Oh/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/Code/data"
+dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
 fls <- dir_ls(dir.data)
 fls <- fls |> str_subset("idp")
 out <- map(fls, read_csv, skip = 0, col_names = 1:74)
@@ -97,6 +97,31 @@ for (i in 1:60){
       norain1 = norain1,
       norain2 = norain2,
       norain3 = norain3,
+      clan = clan,
+      alsha_occ = alsha_occ,
+      alsha_fat = alsha_fat,
+      fatcon_occ = fatcon_occ,
+      fatcon_fat = fatcon_fat,
+      temp0 = temp0,
+      temp1 = temp1,
+      temp2 = temp2,
+      temp3 = temp3,
+      pdi0 = pdi0,
+      pdi1 = pdi1,
+      pdi2 = pdi2,
+      pdi3 = pdi3,
+      tdi0 = tdi0,
+      tdi1 = tdi1,
+      tdi2 = tdi2,
+      tdi3 = tdi3,
+      vdi0 = vdi0,
+      vdi1 = vdi1,
+      vdi2 = vdi2,
+      vdi3 = vdi3,
+      cdi0 = cdi0,
+      cdi1 = cdi1,
+      cdi2 = cdi2,
+      cdi3 = cdi3
       
     )
   # build a network
@@ -145,10 +170,44 @@ for (i in 1:60){
   net %v% "norain1" <- dat$norain1
   net %v% "norain2" <- dat$norain2
   net %v% "norain3" <- dat$norain3
-  
+  net %v% "clan" <- dat$clan
+  net %v% "alsha_occ" <- dat$alsha_occ
+  net %v% "alsha_fat" <- dat$alsha_fat
+  net %v% "fatcon_occ" <- dat$fatcon_occ
+  net %v% "fatcon_fat" <- dat$fatcon_fat
+  net %v% "temp0" <- dat$temp0
+  net %v% "temp1" <- dat$temp1
+  net %v% "temp2" <- dat$temp2
+  net %v% "temp3" <- dat$temp3
+  net %v% "pdi0" <- dat$pdi0
+  net %v% "pdi1" <- dat$pdi1
+  net %v% "pdi2" <- dat$pdi2
+  net %v% "pdi3" <- dat$pdi3
+  net %v% "tdi0" <- dat$tdi0
+  net %v% "tdi1" <- dat$tdi1
+  net %v% "tdi2" <- dat$tdi2
+  net %v% "tdi3" <- dat$tdi3
+  net %v% "vdi0" <- dat$vdi0
+  net %v% "vdi1" <- dat$vdi1
+  net %v% "vdi2" <- dat$vdi2
+  net %v% "vdi3" <- dat$vdi3
+  net %v% "cdi0" <- dat$cdi0
+  net %v% "cdi1" <- dat$cdi1
+  net %v% "cdi2" <- dat$cdi2
+  net %v% "cdi3" <- dat$cdi3
+
   nets[[i]] <- net
 }
 ```
+
+Develop a ERGM
+
+```{r}
+
+
+```
+
+
 
 Develop a TERGM
 
@@ -160,7 +219,7 @@ nw.fit.fp1 <- tergm(nets ~ edges,
                      estimate = "CMLE",
                      times = c(1:60)
 )
-toc() # 6.92 sec in laptop
+toc() # 10.79 sec in laptop
 summary(nw.fit.fp1)
 
 ```
@@ -169,28 +228,12 @@ Model 2: Conflict diff model
 
 ```{r}
 tic()
-nw.fit.fp2 <- tergm(nets ~ edges + diff("tot_con_occ") +diff("batt_occ")+diff("civi_occ")+diff("expl_occ")+diff("prot_occ")+diff("riot_occ")+diff("stra_occ")+diff("tot_con_fat")+diff("batt_fat")+diff("civi_fat")+diff("expl_fat")+diff("prot_fat")+diff("riot_fat")+diff("stra_fat"),
+nw.fit.fp2 <- tergm(nets ~ edges + diff("tot_con_occ") +diff("tot_con_fat") + diff("alsha_occ") + diff("alsha_fat") + diff("fatcon_occ") + diff("fatcon_fat"),
                      estimate = "CMLE",
                      times = c(1:60)
 )
-toc() # 8.61 sec in laptop
+toc() # 8.74 sec in laptop
 summary(nw.fit.fp2)
-
-tic()
-nw.fit.fp2_1 <- tergm(nets ~ edges + diff("riot_occ") + diff("riot_fat"),
-                     estimate = "CMLE",
-                     times = c(1:60)
-)
-toc() # 9.37 sec in laptop
-summary(nw.fit.fp2_1)
-
-tic()
-nw.fit.fp2_2 <- tergm(nets ~ edges + diff("stra_occ") + diff("stra_fat"),
-                     estimate = "CMLE",
-                     times = c(1:60)
-)
-toc() # 8.14 sec in laptop
-summary(nw.fit.fp2_2)
 ```
 
 Model 3: climate variable diff model
@@ -203,13 +246,28 @@ Environmental/Climate data (number stands for time lag, e.g., 1 means that it is
 
 ```{r}
 tic()
-nw.fit.fp3 <- tergm(nets ~ edges+diff("spi0")+diff("spi1")+diff("spi2")+diff("spi3")+diff("chirps0")+diff("chirps1")+diff("chirps2")+diff("chirps3")+diff("ndvi0")+diff("ndvi1")+diff("ndvi2")+diff("ndvi3")+diff("norain0")+diff("norain1")+diff("norain2")+diff("norain3")+diff("avgrain0")+diff("avgrain1")+diff("avgrain2")+diff("avgrain3"),
+nw.fit.fp3 <- tergm(nets ~ edges+diff("spi0")+diff("spi1")+diff("spi2")+diff("spi3")+diff("chirps0")+diff("chirps1")+diff("chirps2")+diff("chirps3")+diff("ndvi0")+diff("ndvi1")+diff("ndvi2")+diff("ndvi3")+diff("norain0")+diff("norain1")+diff("norain2")+diff("norain3")+diff("avgrain0")+diff("avgrain1")+diff("avgrain2")+diff("avgrain3")+diff("temp0")+diff("temp1")+diff("temp2")+diff("temp3")+diff("pdi0")+diff("pdi1")+diff("pdi2")+diff("pdi3")+diff("tdi0")+diff("tdi1")+diff("tdi2")+diff("tdi3")+diff("vdi0")+diff("vdi1")+diff("vdi2")+diff("vdi3")+diff("cdi0")+diff("cdi1")+diff("cdi2")+diff("cdi3"),
                      estimate = "CMLE",
                      times = c(1:60)
 )
 toc() # 11.67 sec in laptop
 summary(nw.fit.fp3)
 ```
+
+Model 4: Social model
+
+```{r}
+tic()
+nw.fit.fp4 <- tergm(nets ~ edges+nodematch("clan")+diff("pop"),
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 11.67 sec in laptop
+summary(nw.fit.fp4)
+```
+
+
+
 
 Separable model
 
