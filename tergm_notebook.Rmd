@@ -26,9 +26,9 @@ Load IDP flow data
 
 ```{r}
 # Laptop directory
-# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/Code/data"
+ dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
 # Office PC directory
-dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
+# dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
 fls <- dir_ls(dir.data)
 fls <- fls |> str_subset("idp")
 out <- map(fls, read_csv, skip = 0, col_names = 1:74)
@@ -44,6 +44,10 @@ Load attribute data
 fls <- dir_ls(dir.data)
 fls <- fls |> str_subset("var")
 att <- map(fls, read_csv)
+# distance
+setwd(dir.data)
+distance <- read_csv("distance.csv",col_names =FALSE)
+region <- read_csv("regions.csv",col_names =FALSE)
 ```
 
 Link attributes to nodes
@@ -127,7 +131,7 @@ for (i in 1:60){
   # build a network
   net <- network(out[[i]],directed = TRUE,loops = FALSE,matrix.type="adjacency")
   net %e% "flow" <- out[[i]] 
-  
+  net %e% "distance" <- distance
   
   net %v% "tot_con_occ" <- dat$tot_con_occ
   net %v% "tot_con_fat" <- dat$tot_con_fat
@@ -195,7 +199,7 @@ for (i in 1:60){
   net %v% "cdi1" <- dat$cdi1
   net %v% "cdi2" <- dat$cdi2
   net %v% "cdi3" <- dat$cdi3
-
+  net %v% "region" <- region
   nets[[i]] <- net
 }
 ```
@@ -221,6 +225,14 @@ nw.fit.fp1 <- tergm(nets ~ edges,
 )
 toc() # 10.79 sec in laptop
 summary(nw.fit.fp1)
+
+tic()
+nw.fit.fp1_2 <- tergm(nets ~ edges + transitiveties + mutual,
+                     estimate = "CMLE",
+                     times = c(1:60)
+)
+toc() # 10.79 sec in laptop
+summary(nw.fit.fp1_2)
 
 ```
 
