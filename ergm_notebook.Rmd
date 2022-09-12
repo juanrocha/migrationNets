@@ -17,9 +17,9 @@ library(tictoc)
 Load IDP data
 ```{r}
 # Office PC directory
-# dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
+ dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
 # Laptop directory
- dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
+# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
 fls <- dir_ls(dir.data)
 fls
 fls <- fls |> str_subset("2017") |> str_subset("idp")
@@ -186,20 +186,29 @@ summary(f2)
 ```
 
 ```{r}
-f3 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+nodematch("clan")+diff("pop14")+diff("urban")+nodematch("region"))
+f3 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural"))
 summary(f3)
 ```
 ```{r}
-f4 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodematch("region")+nodeocov("pdi_m")+nodeicov("pdi_m")+nodeocov("chirps_m")+nodeicov("chirps_m")+nodeocov("norain_m")+nodeicov("norain_m"))
+f4 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeicov("pdi_m")+nodeocov("chirps_m")+nodeicov("chirps_m"))
 summary(f4)
 ```
 
 ```{r}
-f5 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodematch("region")+nodeocov("tdi_m")+nodeicov("tdi_m")+nodeocov("temp_m")+nodeicov("temp_m"))
+f5 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("tdi_m")+nodeicov("tdi_m")+nodeocov("temp_m")+nodeicov("temp_m"))
 summary(f5)
 ```
 
 ```{r}
-f6 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodematch("region")+nodeocov("vdi_m")+nodeicov("vdi_m")+nodeocov("ndvi_m")+nodeicov("ndvi_m"))
+f6 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("vdi_m")+nodeicov("vdi_m")+nodeocov("ndvi_m")+nodeicov("ndvi_m"))
 summary(f6)
+```
+
+```{r}
+f7 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("pdi_m")+diff("chirps_m")+diff("tdi_m")+diff("temp_m")+diff("vdi_m")+diff("ndvi_m"))
+summary(f7)
+```
+
+```{r}
+
 ```
