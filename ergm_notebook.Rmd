@@ -205,7 +205,7 @@ summary(f6)
 ```
 
 ```{r}
-f7 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("pdi_m")+diff("chirps_m")+diff("tdi_m")+diff("temp_m")+diff("vdi_m")+diff("ndvi_m"))
+f7 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("pdi_m")+diff("tdi_m")+diff("vdi_m"))
 summary(f7)
 ```
 
