@@ -168,36 +168,59 @@ net
 # observed distribution of triangles
 summary(net~triadcensus)
 ```
-
+Model I: Null model
 
 ```{r}
 f0 <- ergm(net ~ edges)
 summary(f0)
 ```
+Model II: Network model with transitivity, mutuality, cyclicality
+
 
 ```{r}
 f1 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties)
 summary(f1)
 ```
 
+Model III: Addition of edge attributes
+  distance - geodesic distance
+  net2016 - IDP routes of the previous year, 2016
+
 ```{r}
 f2 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+edgecov(distance)+edgecov(net2016))
 summary(f2)
 ```
 
+Model IV: Social model
+  alsha_occ - occurrence number of Al-Shabaab-related conflict events
+  urbanrural - urban population / rural population
+
 ```{r}
 f3 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural"))
 summary(f3)
 ```
+
+Model V: P-model (precipitation model)
+  pdi_m - Average Precipitation Drought Index in 2017 (includes both drought intensity by rainfalls and consecutive dryness) -> the higher the better
+  chirps_m - Average precipitation in 2017 (includes only precipitation intensity) -> the higher the better
+
 ```{r}
 f4 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeicov("pdi_m")+nodeocov("chirps_m")+nodeicov("chirps_m"))
 summary(f4)
 ```
 
+Model VI: T-Model (Temperature model)
+  tdi_m - Average Temperature Drought Index in 2017 (includes both drought intensity by temperature and consecutive high temperature) -> the higher the better
+  temp_m - Average temperature in 2017 (includes only degree of temperature) -> the lower the better
+
 ```{r}
 f5 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("tdi_m")+nodeicov("tdi_m")+nodeocov("temp_m")+nodeicov("temp_m"))
 summary(f5)
 ```
+
+Model VII: V-Model (Vegetation Model)
+  vdi_m - Average Vegetation Drought Index in 2017 (includes both drought intensity by vegetation and consecutive low vegetation) -> the higher the better
+  ndvi_m - Average vegetation in 2017 (includes only degree of NDVI) -> the higher the better
 
 ```{r}
 f6 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("vdi_m")+nodeicov("vdi_m")+nodeocov("ndvi_m")+nodeicov("ndvi_m"))
@@ -205,7 +228,7 @@ summary(f6)
 ```
 
 ```{r}
-f7 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("pdi_m")+diff("chirps_m")+diff("tdi_m")+diff("temp_m")+diff("vdi_m")+diff("ndvi_m"))
+f7 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("pdi_m")+diff("tdi_m")+diff("vdi_m"))
 summary(f7)
 ```
 
