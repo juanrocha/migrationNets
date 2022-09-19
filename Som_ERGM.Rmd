@@ -1,0 +1,63 @@
+---
+title: "Drivers of internal displacement in Somalia: clarifying internal displacement as climate adaptation of what"
+author: | 
+    | Woi Sok Oh^1,2^, Juan Rocha^3^, Simon Levin^2^
+    | \small ^1^High Meadows Environmental Institute, Princeton University, Princeton, NJ 08544
+    | \small ^2^Department of Ecology & Evolutionary Biology, Princeton University, Princeton, NJ 08544
+    | \small ^3^Stockholm Resilience Centre, Stockholm University, Kräftriket 2B, 10691 Stockholm
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    dev: pdf
+    keep_tex: yes
+    latex_engine: pdflatex
+    toc: no
+  html_document:
+    df_print: paged
+    toc: no
+citecolor: blue
+#csl: science.csl
+documentclass: article
+fontsize: 10pt
+header-includes:
+- \usepackage{dcolumn}
+- \usepackage[T1]{fontenc}
+- \usepackage{inputenc}
+# keywords: 
+lineno: no
+linkcolor: blue
+#bibliography: somergm.bib
+editor_options: 
+  chunk_output_type: console
+abstract: |
+  Recent years have witnessed millions of global populations involuntarily migrating by external forces. In particular, existing studies increasingly use terms such as climate migration, climate refugee, or climate mobility to highlight population displacement driven by natural disasters or weather events. Some studies further suggest that migration/displacement is a process of climate adaptation. However, we lack evidence on what and how climatic drivers significantly displace people. There are many climatic components that we need to be clear on what really affect the population movement. The missing information is also important to explain whether population movement is an adaptation of different climate components. Are displacements an adaptation process for all climatic drivers? To solve these research gaps, we developed a temporal exponential random graph model (TERGM) in the case of Somali internal displacement. The model was useful to understand how internally displaced person (IDP) flows were formed and dissolved in response to changing climate attributes. In our preliminary result, we found that people were likely to move to destinations with high precipitation when forming new IDP flows. In persistence of IDP flows, they tend to less consider precipitation of their destinations. Therefore, Somali IDPs were adaptive to precipitation in the IDP network formation but not adaptive in the network persistence. This finding improves our understanding of interactions between climate and human displacement.
+urlcolor: blue
+base_format: rticles::elsevier_article
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Research questions
+
+* Are population movements climate adaptation processes? For which climatic drivers do we observe adaptation/maladaptation?
+* How do attributes at destinations and origins drive displacement? How do they differently work on the formation and persistence of displacement network?
+
+
+
+## Data and Methods
+
+
+
+## Results and Discussions
+
+
+
+## Conclusions
+
+
+
