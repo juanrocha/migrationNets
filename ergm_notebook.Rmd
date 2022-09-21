@@ -17,9 +17,9 @@ library(tictoc)
 Load IDP data
 ```{r}
 # Office PC directory
- dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
+# dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
 # Laptop directory
-# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
+ dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
 fls <- dir_ls(dir.data)
 fls
 fls <- fls |> str_subset("2017") |> str_subset("idp")
@@ -233,5 +233,12 @@ summary(f7)
 ```
 
 ```{r}
+f7_1 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("pdi_m"))
+summary(f7_1)
 
+f7_2 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("tdi_m"))
+summary(f7_2)
+
+f7_3 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("vdi_m"))
+summary(f7_3)
 ```
