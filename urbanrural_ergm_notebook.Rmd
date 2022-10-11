@@ -1,0 +1,350 @@
+---
+title: "ERGM for Somali IDP networks"
+output: ergm_notebook
+---
+
+Load libraries
+
+```{r}
+library(tidyverse)
+library(fs)
+library(network)
+library(ergm)
+library(ergm.count)
+library(tictoc)
+```
+
+Load IDP data
+```{r}
+# Office PC directory
+ dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
+# Laptop directory
+# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2017") |> str_subset("idp")
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+mat <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(mat) <- 0
+# urban->urban
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2017") |> str_subset("uu") 
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+mat_uu <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(mat_uu) <- 0
+
+# urban->rural
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2017") |> str_subset("ur") 
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+mat_ur <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(mat_ur) <- 0
+
+# rural->urban
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2017") |> str_subset("ru") 
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+mat_ur <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(mat_ru) <- 0
+
+# rural->rural
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2017") |> str_subset("rr") 
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+mat_rr <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(mat_rr) <- 0
+
+# Previous year IDP flows
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2016") |> str_subset("idp")
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+net2016 <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(net2016) <- 0
+net2016 <- 1*(net2016 > 0)
+
+# uu
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2016") |> str_subset("uu")
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+net2016_uu <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(net2016_uu) <- 0
+net2016_uu <- 1*(net2016_uu > 0)
+# ur
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2016") |> str_subset("ur")
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+net2016_ur <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(net2016_ur) <- 0
+net2016_ur <- 1*(net2016_ur > 0)
+# ru
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2016") |> str_subset("ru")
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+net2016_ru <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(net2016_ru) <- 0
+net2016_ru <- 1*(net2016_ru > 0)
+# rr
+fls <- dir_ls(dir.data)
+fls
+fls <- fls |> str_subset("2016") |> str_subset("rr")
+fls
+out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+class(out)
+length(out)
+#out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+out <- map(out, function(x) as.matrix(x))
+
+net2016_rr <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+diag(net2016_rr) <- 0
+net2016_rr <- 1*(net2016_rr > 0)
+
+```
+
+Load attribute data
+```{r}
+## attributes
+
+fls <- dir_ls(dir.data)
+fls
+
+fls <- fls |> str_subset("2017") |> str_subset("var")
+
+out <- map(fls, read_csv)
+out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
+
+out
+
+out <-bind_rows(out)
+setwd(dir.data)
+distance <- read_csv("distance.csv",col_names =FALSE)
+distance <- as.matrix(distance)
+```
+
+Build network
+
+```{r}
+dat <- out |> group_by(id) |>
+  summarize(
+    tot_con_occ = sum(tot_con_occ),
+    tot_con_fat = sum(tot_con_fat),
+    alsha_occ = sum(alsha_occ),
+    alsha_fat = sum(alsha_fat),
+    fatcon_occ = sum(fatcon_occ),
+    fatcon_fat = sum(fatcon_fat),
+    spi_m = mean(spi0),
+    spi_max = max(spi0),
+    spi_min = min(spi0),
+    chirps_m = mean(chirps0),
+    chirps_max = max(chirps0),
+    chirps_min = min(chirps0),
+    ndvi_m = mean(ndvi0),
+    ndvi_max = max(ndvi0),
+    ndvi_min = min(ndvi0),
+    avgrain_m = mean(avgrain0),
+    avgrain_max = max(avgrain0),
+    avgrain_min = min(avgrain0),
+    norain_m = mean(norain0),
+    norain_max = max(norain0),
+    norain_min = min(norain0),
+    clan = clans,
+    temp_m = mean(temp0),
+    temp_max = max(temp0),
+    temp_min = min(temp0),
+    pdi_m = mean(pdi0),
+    pdi_max = max(pdi0),
+    pdi_min = min(pdi0),
+    tdi_m = mean(tdi0),
+    tdi_max = max(tdi0),
+    tdi_min = min(tdi0),
+    vdi_m = mean(vdi0),
+    vdi_max = max(vdi0),
+    vdi_min = min(vdi0),
+    pop14 = mean(pop14),
+    urban = mean(popurban14),
+    rural = mean(poprural14),
+    region = mean(region),
+    urbanrural = mean(popurban14)/mean(poprural14)
+  )
+```
+
+```{r}
+net <- network(mat, directed = TRUE)
+net
+net %e% "flow" <- mat
+net %e% "net2016" <- net2016
+net %e% "distance" <- distance
+net %v% "tot_con_occ" <- dat$tot_con_occ
+net %v% "tot_con_fat" <- dat$tot_con_fat
+net %v% "alsha_occ" <- dat$alsha_occ
+net %v% "alsha_fat" <- dat$alsha_fat
+net %v% "fatcon_occ" <- dat$fatcon_occ
+net %v% "fatcon_fat" <- dat$fatcon_fat
+net %v% "spi_m" <- dat$spi_m
+net %v% "spi_max" <- dat$spi_max
+net %v% "spi_min" <- dat$spi_min
+net %v% "chirps_m" <- dat$chirps_m
+net %v% "chirps_max" <- dat$chirps_max
+net %v% "chirps_min" <- dat$chirps_min
+net %v% "ndvi_m" <- dat$ndvi_m
+net %v% "ndvi_max" <- dat$ndvi_max
+net %v% "ndvi_min" <- dat$ndvi_min
+net %v% "avgrain_m" <- dat$avgrain_m
+net %v% "avgrain_max" <- dat$avgrain_max
+net %v% "avgrain_min" <- dat$avgrain_min
+net %v% "norain_m" <- dat$norain_m
+net %v% "norain_max" <- dat$norain_max
+net %v% "norain_min" <- dat$norain_min
+net %v% "clan" <- dat$clan
+net %v% "temp_m" <- dat$temp_m
+net %v% "temp_max" <- dat$temp_max
+net %v% "temp_min" <- dat$temp_min
+net %v% "pdi_m" <- dat$pdi_m
+net %v% "pdi_max" <- dat$pdi_max
+net %v% "pdi_min" <- dat$pdi_min
+net %v% "tdi_m" <- dat$tdi_m
+net %v% "tdi_max" <- dat$tdi_max
+net %v% "tdi_min" <- dat$tdi_min
+net %v% "vdi_m" <- dat$vdi_m
+net %v% "vdi_max" <- dat$vdi_max
+net %v% "vdi_min" <- dat$vdi_min
+net %v% "pop14" <- dat$pop14
+net %v% "urban" <- dat$urban
+net %v% "rural" <- dat$rural
+net %v% "region" <- dat$region
+net %v% "urbanrural" <- dat$urbanrural
+net
+```
+
+```{r}
+# observed distribution of triangles
+summary(net~triadcensus)
+```
+Model I: Null model
+
+```{r}
+f0 <- ergm(net ~ edges)
+summary(f0)
+```
+Model II: Network model with transitivity, mutuality, cyclicality
+
+
+```{r}
+f1 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties)
+summary(f1)
+```
+
+Model III: Addition of edge attributes
+  distance - geodesic distance
+  net2016 - IDP routes of the previous year, 2016
+
+```{r}
+f2 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+edgecov(distance)+edgecov(net2016))
+summary(f2)
+```
+
+Model IV: Social model
+  alsha_occ - occurrence number of Al-Shabaab-related conflict events
+  urbanrural - urban population / rural population
+
+```{r}
+f3 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural"))
+summary(f3)
+```
+
+Model V: P-model (precipitation model)
+  pdi_m - Average Precipitation Drought Index in 2017 (includes both drought intensity by rainfalls and consecutive dryness) -> the higher the better
+  chirps_m - Average precipitation in 2017 (includes only precipitation intensity) -> the higher the better
+
+```{r}
+f4 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeicov("pdi_m")+nodeocov("chirps_m")+nodeicov("chirps_m"))
+summary(f4)
+```
+
+Model VI: T-Model (Temperature model)
+  tdi_m - Average Temperature Drought Index in 2017 (includes both drought intensity by temperature and consecutive high temperature) -> the higher the better
+  temp_m - Average temperature in 2017 (includes only degree of temperature) -> the lower the better
+
+```{r}
+f5 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("tdi_m")+nodeicov("tdi_m")+nodeocov("temp_m")+nodeicov("temp_m"))
+summary(f5)
+```
+
+Model VII: V-Model (Vegetation Model)
+  vdi_m - Average Vegetation Drought Index in 2017 (includes both drought intensity by vegetation and consecutive low vegetation) -> the higher the better
+  ndvi_m - Average vegetation in 2017 (includes only degree of NDVI) -> the higher the better
+
+```{r}
+f6 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("vdi_m")+nodeicov("vdi_m")+nodeocov("ndvi_m")+nodeicov("ndvi_m"))
+summary(f6)
+```
+
+```{r}
+f7 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("pdi_m")+diff("tdi_m")+diff("vdi_m"))
+summary(f7)
+```
+
+```{r}
+
+```
