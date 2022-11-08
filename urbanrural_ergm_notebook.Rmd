@@ -17,13 +17,11 @@ library(tictoc)
 Load IDP data
 ```{r}
 # Office PC directory
- dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
+# dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
 # Laptop directory
-# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
+ dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2017") |> str_subset("idp")
-fls
 out <- map(fls, read_csv, skip = 0, col_names = 1:74)
 class(out)
 length(out)
@@ -34,10 +32,8 @@ mat <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]
 diag(mat) <- 0
 # urban->urban
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2017") |> str_subset("uu") 
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
@@ -48,10 +44,8 @@ diag(mat_uu) <- 0
 
 # urban->rural
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2017") |> str_subset("ur") 
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
@@ -62,24 +56,20 @@ diag(mat_ur) <- 0
 
 # rural->urban
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2017") |> str_subset("ru") 
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
 out <- map(out, function(x) as.matrix(x))
 
-mat_ur <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
+mat_ru <- out[[1]] + out[[2]] + out[[3]] + out[[4]] + out[[5]] + out[[6]] + out[[7]] + out[[8]] + out[[9]] + out[[10]] + out[[11]] + out[[12]]
 diag(mat_ru) <- 0
 
 # rural->rural
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2017") |> str_subset("rr") 
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
@@ -90,9 +80,7 @@ diag(mat_rr) <- 0
 
 # Previous year IDP flows
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2016") |> str_subset("idp")
-fls
 out <- map(fls, read_csv, skip = 0, col_names = 1:74)
 class(out)
 length(out)
@@ -105,10 +93,8 @@ net2016 <- 1*(net2016 > 0)
 
 # uu
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2016") |> str_subset("uu")
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
@@ -119,10 +105,8 @@ diag(net2016_uu) <- 0
 net2016_uu <- 1*(net2016_uu > 0)
 # ur
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2016") |> str_subset("ur")
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
@@ -133,10 +117,8 @@ diag(net2016_ur) <- 0
 net2016_ur <- 1*(net2016_ur > 0)
 # ru
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2016") |> str_subset("ru")
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
@@ -147,10 +129,8 @@ diag(net2016_ru) <- 0
 net2016_ru <- 1*(net2016_ru > 0)
 # rr
 fls <- dir_ls(dir.data)
-fls
 fls <- fls |> str_subset("2016") |> str_subset("rr")
-fls
-out <- map(fls, read_csv, skip = 0, col_names = 1:74)
+out <- map(fls, read_csv, skip = 1, col_names = 1:74)
 class(out)
 length(out)
 #out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
@@ -167,10 +147,7 @@ Load attribute data
 ## attributes
 
 fls <- dir_ls(dir.data)
-fls
-
 fls <- fls |> str_subset("2017") |> str_subset("var")
-
 out <- map(fls, read_csv)
 out <- map2(.x = out, .y = 1:12, function(x,y) {x$month <- y; return(x)})
 
@@ -212,15 +189,33 @@ dat <- out |> group_by(id) |>
     temp_m = mean(temp0),
     temp_max = max(temp0),
     temp_min = min(temp0),
-    pdi_m = mean(pdi0),
+    pdi0_m = mean(pdi0),
+    pdi1_m = mean(pdi1),
+    pdi2_m = mean(pdi2),
+    pdi3_m = mean(pdi3),
+    pdi01_m = mean((pdi0+pdi1)/2),
+    pdi012_m = mean((pdi0+pdi1+pdi2)/3),
+    pdi0123_m = mean((pdi0+pdi1+pdi2+pdi3)/4),
     pdi_max = max(pdi0),
     pdi_min = min(pdi0),
+    pdi_p1 = mean(pdi0_p1),
+    pdi_p2 = mean(pdi0_p2),
+    pdi_p3 = mean(pdi0_p3),
+    pdi_p4 = mean(pdi0_p4),
     tdi_m = mean(tdi0),
     tdi_max = max(tdi0),
     tdi_min = min(tdi0),
+    tdi_p1 = mean(tdi0_p1),
+    tdi_p2 = mean(tdi0_p2),
+    tdi_p3 = mean(tdi0_p3),
+    tdi_p4 = mean(tdi0_p4),
     vdi_m = mean(vdi0),
     vdi_max = max(vdi0),
     vdi_min = min(vdi0),
+    vdi_p1 = mean(vdi0_p1),
+    vdi_p2 = mean(vdi0_p2),
+    vdi_p3 = mean(vdi0_p3),
+    vdi_p4 = mean(vdi0_p4),
     pop14 = mean(pop14),
     urban = mean(popurban14),
     rural = mean(poprural14),
@@ -260,21 +255,283 @@ net %v% "clan" <- dat$clan
 net %v% "temp_m" <- dat$temp_m
 net %v% "temp_max" <- dat$temp_max
 net %v% "temp_min" <- dat$temp_min
-net %v% "pdi_m" <- dat$pdi_m
+net %v% "pdi0_m" <- dat$pdi0_m
+net %v% "pdi1_m" <- dat$pdi1_m
+net %v% "pdi2_m" <- dat$pdi2_m
+net %v% "pdi3_m" <- dat$pdi3_m
+net %v% "pdi01_m" <- dat$pdi01_m
+net %v% "pdi012_m" <- dat$pdi012_m
+net %v% "pdi0123_m" <- dat$pdi0123_m
 net %v% "pdi_max" <- dat$pdi_max
 net %v% "pdi_min" <- dat$pdi_min
+net %v% "pdi_p1" <- dat$pdi_p1
+net %v% "pdi_p2" <- dat$pdi_p2
+net %v% "pdi_p3" <- dat$pdi_p3
+net %v% "pdi_p4" <- dat$pdi_p4
 net %v% "tdi_m" <- dat$tdi_m
 net %v% "tdi_max" <- dat$tdi_max
 net %v% "tdi_min" <- dat$tdi_min
+net %v% "tdi_p1" <- dat$tdi_p1
+net %v% "tdi_p2" <- dat$tdi_p2
+net %v% "tdi_p3" <- dat$tdi_p3
+net %v% "tdi_p4" <- dat$tdi_p4
 net %v% "vdi_m" <- dat$vdi_m
 net %v% "vdi_max" <- dat$vdi_max
 net %v% "vdi_min" <- dat$vdi_min
+net %v% "vdi_p1" <- dat$vdi_p1
+net %v% "vdi_p2" <- dat$vdi_p2
+net %v% "vdi_p3" <- dat$vdi_p3
+net %v% "vdi_p4" <- dat$vdi_p4
 net %v% "pop14" <- dat$pop14
 net %v% "urban" <- dat$urban
 net %v% "rural" <- dat$rural
 net %v% "region" <- dat$region
 net %v% "urbanrural" <- dat$urbanrural
 net
+
+net_uu <- network(mat_uu, directed = TRUE)
+net_uu
+net_uu %e% "flow" <- mat_uu
+net_uu %e% "net2016_uu" <- net2016_uu
+net_uu %e% "distance" <- distance
+net_uu %v% "tot_con_occ" <- dat$tot_con_occ
+net_uu %v% "tot_con_fat" <- dat$tot_con_fat
+net_uu %v% "alsha_occ" <- dat$alsha_occ
+net_uu %v% "alsha_fat" <- dat$alsha_fat
+net_uu %v% "fatcon_occ" <- dat$fatcon_occ
+net_uu %v% "fatcon_fat" <- dat$fatcon_fat
+net_uu %v% "spi_m" <- dat$spi_m
+net_uu %v% "spi_max" <- dat$spi_max
+net_uu %v% "spi_min" <- dat$spi_min
+net_uu %v% "chirps_m" <- dat$chirps_m
+net_uu %v% "chirps_max" <- dat$chirps_max
+net_uu %v% "chirps_min" <- dat$chirps_min
+net_uu %v% "ndvi_m" <- dat$ndvi_m
+net_uu %v% "ndvi_max" <- dat$ndvi_max
+net_uu %v% "ndvi_min" <- dat$ndvi_min
+net_uu %v% "avgrain_m" <- dat$avgrain_m
+net_uu %v% "avgrain_max" <- dat$avgrain_max
+net_uu %v% "avgrain_min" <- dat$avgrain_min
+net_uu %v% "norain_m" <- dat$norain_m
+net_uu %v% "norain_max" <- dat$norain_max
+net_uu %v% "norain_min" <- dat$norain_min
+net_uu %v% "clan" <- dat$clan
+net_uu %v% "temp_m" <- dat$temp_m
+net_uu %v% "temp_max" <- dat$temp_max
+net_uu %v% "temp_min" <- dat$temp_min
+net_uu %v% "pdi0_m" <- dat$pdi0_m
+net_uu %v% "pdi1_m" <- dat$pdi1_m
+net_uu %v% "pdi2_m" <- dat$pdi2_m
+net_uu %v% "pdi3_m" <- dat$pdi3_m
+net_uu %v% "pdi_max" <- dat$pdi_max
+net_uu %v% "pdi_min" <- dat$pdi_min
+net_uu %v% "pdi_p1" <- dat$pdi_p1
+net_uu %v% "pdi_p2" <- dat$pdi_p2
+net_uu %v% "pdi_p3" <- dat$pdi_p3
+net_uu %v% "pdi_p4" <- dat$pdi_p4
+net_uu %v% "tdi_m" <- dat$tdi_m
+net_uu %v% "tdi_max" <- dat$tdi_max
+net_uu %v% "tdi_min" <- dat$tdi_min
+net_uu %v% "tdi_p1" <- dat$tdi_p1
+net_uu %v% "tdi_p2" <- dat$tdi_p2
+net_uu %v% "tdi_p3" <- dat$tdi_p3
+net_uu %v% "tdi_p4" <- dat$tdi_p4
+net_uu %v% "vdi_m" <- dat$vdi_m
+net_uu %v% "vdi_max" <- dat$vdi_max
+net_uu %v% "vdi_min" <- dat$vdi_min
+net_uu %v% "vdi_p1" <- dat$vdi_p1
+net_uu %v% "vdi_p2" <- dat$vdi_p2
+net_uu %v% "vdi_p3" <- dat$vdi_p3
+net_uu %v% "vdi_p4" <- dat$vdi_p4
+net_uu %v% "pop14" <- dat$pop14
+net_uu %v% "urban" <- dat$urban
+net_uu %v% "rural" <- dat$rural
+net_uu %v% "region" <- dat$region
+net_uu %v% "urbanrural" <- dat$urbanrural
+net_uu
+
+net_ur <- network(mat_ur, directed = TRUE)
+net_ur
+net_ur %e% "flow" <- mat_ur
+net_ur %e% "net2016_ur" <- net2016_ur
+net_ur %e% "distance" <- distance
+net_ur %v% "tot_con_occ" <- dat$tot_con_occ
+net_ur %v% "tot_con_fat" <- dat$tot_con_fat
+net_ur %v% "alsha_occ" <- dat$alsha_occ
+net_ur %v% "alsha_fat" <- dat$alsha_fat
+net_ur %v% "fatcon_occ" <- dat$fatcon_occ
+net_ur %v% "fatcon_fat" <- dat$fatcon_fat
+net_ur %v% "spi_m" <- dat$spi_m
+net_ur %v% "spi_max" <- dat$spi_max
+net_ur %v% "spi_min" <- dat$spi_min
+net_ur %v% "chirps_m" <- dat$chirps_m
+net_ur %v% "chirps_max" <- dat$chirps_max
+net_ur %v% "chirps_min" <- dat$chirps_min
+net_ur %v% "ndvi_m" <- dat$ndvi_m
+net_ur %v% "ndvi_max" <- dat$ndvi_max
+net_ur %v% "ndvi_min" <- dat$ndvi_min
+net_ur %v% "avgrain_m" <- dat$avgrain_m
+net_ur %v% "avgrain_max" <- dat$avgrain_max
+net_ur %v% "avgrain_min" <- dat$avgrain_min
+net_ur %v% "norain_m" <- dat$norain_m
+net_ur %v% "norain_max" <- dat$norain_max
+net_ur %v% "norain_min" <- dat$norain_min
+net_ur %v% "clan" <- dat$clan
+net_ur %v% "temp_m" <- dat$temp_m
+net_ur %v% "temp_max" <- dat$temp_max
+net_ur %v% "temp_min" <- dat$temp_min
+net_ur %v% "pdi0_m" <- dat$pdi0_m
+net_ur %v% "pdi1_m" <- dat$pdi1_m
+net_ur %v% "pdi2_m" <- dat$pdi2_m
+net_ur %v% "pdi3_m" <- dat$pdi3_m
+net_ur %v% "pdi_max" <- dat$pdi_max
+net_ur %v% "pdi_min" <- dat$pdi_min
+net_ur %v% "pdi_p1" <- dat$pdi_p1
+net_ur %v% "pdi_p2" <- dat$pdi_p2
+net_ur %v% "pdi_p3" <- dat$pdi_p3
+net_ur %v% "pdi_p4" <- dat$pdi_p4
+net_ur %v% "tdi_m" <- dat$tdi_m
+net_ur %v% "tdi_max" <- dat$tdi_max
+net_ur %v% "tdi_min" <- dat$tdi_min
+net_ur %v% "tdi_p1" <- dat$tdi_p1
+net_ur %v% "tdi_p2" <- dat$tdi_p2
+net_ur %v% "tdi_p3" <- dat$tdi_p3
+net_ur %v% "tdi_p4" <- dat$tdi_p4
+net_ur %v% "vdi_m" <- dat$vdi_m
+net_ur %v% "vdi_max" <- dat$vdi_max
+net_ur %v% "vdi_min" <- dat$vdi_min
+net_ur %v% "vdi_p1" <- dat$vdi_p1
+net_ur %v% "vdi_p2" <- dat$vdi_p2
+net_ur %v% "vdi_p3" <- dat$vdi_p3
+net_ur %v% "vdi_p4" <- dat$vdi_p4
+net_ur %v% "pop14" <- dat$pop14
+net_ur %v% "urban" <- dat$urban
+net_ur %v% "rural" <- dat$rural
+net_ur %v% "region" <- dat$region
+net_ur %v% "urbanrural" <- dat$urbanrural
+net_ur
+
+net_ru <- network(mat_ru, directed = TRUE)
+net_ru
+net_ru %e% "flow" <- mat_ru
+net_ru %e% "net2016_ru" <- net2016_ru
+net_ru %e% "distance" <- distance
+net_ru %v% "tot_con_occ" <- dat$tot_con_occ
+net_ru %v% "tot_con_fat" <- dat$tot_con_fat
+net_ru %v% "alsha_occ" <- dat$alsha_occ
+net_ru %v% "alsha_fat" <- dat$alsha_fat
+net_ru %v% "fatcon_occ" <- dat$fatcon_occ
+net_ru %v% "fatcon_fat" <- dat$fatcon_fat
+net_ru %v% "spi_m" <- dat$spi_m
+net_ru %v% "spi_max" <- dat$spi_max
+net_ru %v% "spi_min" <- dat$spi_min
+net_ru %v% "chirps_m" <- dat$chirps_m
+net_ru %v% "chirps_max" <- dat$chirps_max
+net_ru %v% "chirps_min" <- dat$chirps_min
+net_ru %v% "ndvi_m" <- dat$ndvi_m
+net_ru %v% "ndvi_max" <- dat$ndvi_max
+net_ru %v% "ndvi_min" <- dat$ndvi_min
+net_ru %v% "avgrain_m" <- dat$avgrain_m
+net_ru %v% "avgrain_max" <- dat$avgrain_max
+net_ru %v% "avgrain_min" <- dat$avgrain_min
+net_ru %v% "norain_m" <- dat$norain_m
+net_ru %v% "norain_max" <- dat$norain_max
+net_ru %v% "norain_min" <- dat$norain_min
+net_ru %v% "clan" <- dat$clan
+net_ru %v% "temp_m" <- dat$temp_m
+net_ru %v% "temp_max" <- dat$temp_max
+net_ru %v% "temp_min" <- dat$temp_min
+net_ru %v% "pdi0_m" <- dat$pdi0_m
+net_ru %v% "pdi1_m" <- dat$pdi1_m
+net_ru %v% "pdi2_m" <- dat$pdi2_m
+net_ru %v% "pdi3_m" <- dat$pdi3_m
+net_ru %v% "pdi_max" <- dat$pdi_max
+net_ru %v% "pdi_min" <- dat$pdi_min
+net_ru %v% "pdi_p1" <- dat$pdi_p1
+net_ru %v% "pdi_p2" <- dat$pdi_p2
+net_ru %v% "pdi_p3" <- dat$pdi_p3
+net_ru %v% "pdi_p4" <- dat$pdi_p4
+net_ru %v% "tdi_m" <- dat$tdi_m
+net_ru %v% "tdi_max" <- dat$tdi_max
+net_ru %v% "tdi_min" <- dat$tdi_min
+net_ru %v% "tdi_p1" <- dat$tdi_p1
+net_ru %v% "tdi_p2" <- dat$tdi_p2
+net_ru %v% "tdi_p3" <- dat$tdi_p3
+net_ru %v% "tdi_p4" <- dat$tdi_p4
+net_ru %v% "vdi_m" <- dat$vdi_m
+net_ru %v% "vdi_max" <- dat$vdi_max
+net_ru %v% "vdi_min" <- dat$vdi_min
+net_ru %v% "vdi_p1" <- dat$vdi_p1
+net_ru %v% "vdi_p2" <- dat$vdi_p2
+net_ru %v% "vdi_p3" <- dat$vdi_p3
+net_ru %v% "vdi_p4" <- dat$vdi_p4
+net_ru %v% "pop14" <- dat$pop14
+net_ru %v% "urban" <- dat$urban
+net_ru %v% "rural" <- dat$rural
+net_ru %v% "region" <- dat$region
+net_ru %v% "urbanrural" <- dat$urbanrural
+net_ru
+
+net_rr <- network(mat_rr, directed = TRUE)
+net_rr
+net_rr %e% "flow" <- mat_rr
+net_rr %e% "net2016_rr" <- net2016_rr
+net_rr %e% "distance" <- distance
+net_rr %v% "tot_con_occ" <- dat$tot_con_occ
+net_rr %v% "tot_con_fat" <- dat$tot_con_fat
+net_rr %v% "alsha_occ" <- dat$alsha_occ
+net_rr %v% "alsha_fat" <- dat$alsha_fat
+net_rr %v% "fatcon_occ" <- dat$fatcon_occ
+net_rr %v% "fatcon_fat" <- dat$fatcon_fat
+net_rr %v% "spi_m" <- dat$spi_m
+net_rr %v% "spi_max" <- dat$spi_max
+net_rr %v% "spi_min" <- dat$spi_min
+net_rr %v% "chirps_m" <- dat$chirps_m
+net_rr %v% "chirps_max" <- dat$chirps_max
+net_rr %v% "chirps_min" <- dat$chirps_min
+net_rr %v% "ndvi_m" <- dat$ndvi_m
+net_rr %v% "ndvi_max" <- dat$ndvi_max
+net_rr %v% "ndvi_min" <- dat$ndvi_min
+net_rr %v% "avgrain_m" <- dat$avgrain_m
+net_rr %v% "avgrain_max" <- dat$avgrain_max
+net_rr %v% "avgrain_min" <- dat$avgrain_min
+net_rr %v% "norain_m" <- dat$norain_m
+net_rr %v% "norain_max" <- dat$norain_max
+net_rr %v% "norain_min" <- dat$norain_min
+net_rr %v% "clan" <- dat$clan
+net_rr %v% "temp_m" <- dat$temp_m
+net_rr %v% "temp_max" <- dat$temp_max
+net_rr %v% "temp_min" <- dat$temp_min
+net_rr %v% "pdi0_m" <- dat$pdi0_m
+net_rr %v% "pdi1_m" <- dat$pdi1_m
+net_rr %v% "pdi2_m" <- dat$pdi2_m
+net_rr %v% "pdi3_m" <- dat$pdi3_m
+net_rr %v% "pdi_max" <- dat$pdi_max
+net_rr %v% "pdi_min" <- dat$pdi_min
+net_rr %v% "pdi_p1" <- dat$pdi_p1
+net_rr %v% "pdi_p2" <- dat$pdi_p2
+net_rr %v% "pdi_p3" <- dat$pdi_p3
+net_rr %v% "pdi_p4" <- dat$pdi_p4
+net_rr %v% "tdi_m" <- dat$tdi_m
+net_rr %v% "tdi_max" <- dat$tdi_max
+net_rr %v% "tdi_min" <- dat$tdi_min
+net_rr %v% "tdi_p1" <- dat$tdi_p1
+net_rr %v% "tdi_p2" <- dat$tdi_p2
+net_rr %v% "tdi_p3" <- dat$tdi_p3
+net_rr %v% "tdi_p4" <- dat$tdi_p4
+net_rr %v% "vdi_m" <- dat$vdi_m
+net_rr %v% "vdi_max" <- dat$vdi_max
+net_rr %v% "vdi_min" <- dat$vdi_min
+net_rr %v% "vdi_p1" <- dat$vdi_p1
+net_rr %v% "vdi_p2" <- dat$vdi_p2
+net_rr %v% "vdi_p3" <- dat$vdi_p3
+net_rr %v% "vdi_p4" <- dat$vdi_p4
+net_rr %v% "pop14" <- dat$pop14
+net_rr %v% "urban" <- dat$urban
+net_rr %v% "rural" <- dat$rural
+net_rr %v% "region" <- dat$region
+net_rr %v% "urbanrural" <- dat$urbanrural
+net_rr
 ```
 
 ```{r}
@@ -318,8 +575,19 @@ Model V: P-model (precipitation model)
   chirps_m - Average precipitation in 2017 (includes only precipitation intensity) -> the higher the better
 
 ```{r}
-f4 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeicov("pdi_m")+nodeocov("chirps_m")+nodeicov("chirps_m"))
+f4 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi1_m")+nodeocov("pdi2_m")+nodeicov("pdi0_m")+nodeocov("chirps_m")+nodeicov("chirps_m"))
 summary(f4)
+```
+
+```{r}
+#f4_1 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("chirps_m")+diff("pdi0_m"))
+summary(f4_1)
+
+f4_2 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("temp_m")+diff("tdi_m"))
+summary(f4_2)
+
+f4_1 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+diff("ndvi_m")+diff("vdi_m"))
+summary(f4_1)
 ```
 
 Model VI: T-Model (Temperature model)
@@ -346,5 +614,41 @@ summary(f7)
 ```
 
 ```{r}
+f8 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeocov("tdi_m")+nodeocov("vdi_m")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f8)
+```
+
+```{r}
+f9 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_p1")+nodeocov("tdi_p1")+nodeocov("vdi_p1")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f9)
+```
+
+```{r}
+f10 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_p2")+nodeocov("tdi_p2")+nodeocov("vdi_p2")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f10)
+```
+```{r}
+f11 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_p3")+nodeocov("tdi_p3")+nodeocov("vdi_p3")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f11)
+```
+
+```{r}
+f12 <- ergm(net ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_p4")+nodeocov("tdi_p4")+nodeocov("vdi_p4")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f12)
+```
+
+```{r}
+f13_rr <- ergm(net_rr ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016_rr)+nodeocov("alsha_occ")+nodeocov("pdi_m")+nodeocov("tdi_m")+nodeocov("vdi_m")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f13_ur)
 
 ```
+
+f13_ur <- ergm(net_ur ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeocov("tdi_m")+nodeocov("vdi_m")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f13_ur)
+
+f13_ru <- ergm(net_ru ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeocov("tdi_m")+nodeocov("vdi_m")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f13_ru)
+
+f13_rr <- ergm(net_rr ~ edges+transitiveties+mutual+cyclicalties+dgwdsp(1, fixed = TRUE, cutoff = 7, type = c("OSP"))+edgecov(distance)+edgecov(net2016)+nodeocov("alsha_occ")+diff("urbanrural")+nodeocov("pdi_m")+nodeocov("tdi_m")+nodeocov("vdi_m")+nodeicov("pdi_m")+nodeicov("tdi_m")+nodeicov("vdi_m"))
+summary(f13_rr)
+
