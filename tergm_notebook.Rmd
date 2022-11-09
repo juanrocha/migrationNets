@@ -26,9 +26,9 @@ Load IDP flow data
 
 ```{r}
 # Laptop directory
- dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
+# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
 # Office PC directory
-# dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
+ dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
 fls <- dir_ls(dir.data)
 fls <- fls |> str_subset("idp")
 out <- map(fls, read_csv, skip = 0, col_names = 1:74)
@@ -36,6 +36,7 @@ class(out) # list
 length(out) # 60
 out <- map(out, function(x) as.matrix(x))
 for (k in 1:60){diag(out[[k]]) <- 0}
+out2 <- out[13:60]
 ```
 
 Load attribute data
