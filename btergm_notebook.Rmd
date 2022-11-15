@@ -8,8 +8,9 @@ Load libraries
 ```{r}
 library("tergm")
 library("texreg")
-#library("xergm")
-#library("btergm")
+#install_github("leifeld/xergm")
+library("xergm")
+library("btergm")
 library("tsna")
 library("ndtv")
 library("statnet")
@@ -45,10 +46,12 @@ Load attribute data
 fls <- dir_ls(dir.data)
 fls <- fls |> str_subset("var")
 att <- map(fls, read_csv)
+att <- att[13:60]
 # distance
 setwd(dir.data)
 distance <- read_csv("distance.csv",col_names =FALSE)
 region <- read_csv("regions.csv",col_names =FALSE)
+
 ```
 
 Link attributes to nodes
@@ -128,8 +131,8 @@ for (i in 1:48){
     )
   # build a network
   net <- network(out2[[i]],directed = TRUE,loops = FALSE,matrix.type="adjacency")
-  net %e% "flow" <- as.matrix(out2[[i]]) 
-  net %e% "distance" <- distance
+  #net %e% "flow" <- as.matrix(out2[[i]]) 
+  net %e% "distance" <- as.matrix(distance)
   
   net %v% "tot_con_occ" <- dat$tot_con_occ
   net %v% "tot_con_fat" <- dat$tot_con_fat
@@ -199,7 +202,6 @@ for (i in 1:48){
 }
 ```
 
-
 Develop a TERGM
 
 Initial model
@@ -233,9 +235,7 @@ Model 2: Conflict diff model
 
 ```{r}
 tic()
-nw.fit.fp2_1 <- tergm(nets ~ edges + transitiveties + mutual + cyclicalties + nodeicov("alsha_occ") + nodeocov("alsha_occ") + nodeicov("pop"),
-                     estimate = "CMLE",
-                     times = c(1:48)
+nw.fit.fp2_1 <- btergm(nets ~ edges +transitiveties + mutual + cyclicalties + nodeicov("alsha_occ") + nodeocov("alsha_occ")+nodeicov("alsha_fat") + nodeocov("alsha_fat")+edgecov(distance) +nodematch("region") , R = 50, parallel = "snow", ncpus = 2
 )
 toc() # 8.74 sec in laptop
 summary(nw.fit.fp2_1)
@@ -251,12 +251,16 @@ Environmental/Climate data (number stands for time lag, e.g., 1 means that it is
 
 ```{r}
 tic()
-nw.fit.fp3 <- tergm(nets ~ edges+diff("spi0")+diff("spi1")+diff("spi2")+diff("spi3")+diff("chirps0")+diff("chirps1")+diff("chirps2")+diff("chirps3")+diff("ndvi0")+diff("ndvi1")+diff("ndvi2")+diff("ndvi3")+diff("norain0")+diff("norain1")+diff("norain2")+diff("norain3")+diff("avgrain0")+diff("avgrain1")+diff("avgrain2")+diff("avgrain3")+diff("temp0")+diff("temp1")+diff("temp2")+diff("temp3")+diff("pdi0")+diff("pdi1")+diff("pdi2")+diff("pdi3")+diff("tdi0")+diff("tdi1")+diff("tdi2")+diff("tdi3")+diff("vdi0")+diff("vdi1")+diff("vdi2")+diff("vdi3")+diff("cdi0")+diff("cdi1")+diff("cdi2")+diff("cdi3"),
-                     estimate = "CMLE",
-                     times = c(1:60)
+nw.fit.fp3 <- btergm(nets ~ edges +transitiveties + mutual + cyclicalties + nodeicov("alsha_occ") + nodeocov("alsha_occ")+nodeicov("alsha_fat") + nodeocov("alsha_fat")+edgecov(distance) +nodematch("region")+nodeocov("pdi0")+nodeocov("tdi0")+nodeocov("vdi0")+nodeicov("pdi0")+nodeicov("tdi0")+nodeicov("vdi0")+diff("pdi0")+diff("tdi0")+diff("vdi0"), R = 50, parallel = "snow", ncpus = 2
 )
 toc() # 11.67 sec in laptop
 summary(nw.fit.fp3)
+
+tic()
+nw.fit.fp4 <- btergm(nets ~ edges +transitiveties + mutual + cyclicalties + nodeicov("alsha_occ") + nodeocov("alsha_occ")+nodeicov("alsha_fat") + nodeocov("alsha_fat")+edgecov(distance) +nodematch("region")+nodeocov("pdi0_p1")+nodeocov("tdi0_p1")+nodeocov("vdi0_p1")+nodeicov("pdi0_p1")+nodeicov("tdi0_p1")+nodeicov("vdi0_p1"), R = 50, parallel = "snow", ncpus = 2
+)
+toc() # 11.67 sec in laptop
+summary(nw.fit.fp4)
 ```
 
 Model 4: Social model
