@@ -26,9 +26,9 @@ Load IDP flow data
 
 ```{r}
 # Laptop directory
- dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
+# dir.data <- "C:/Users/17654/Dropbox (UFL)/Woi Sok Tony Oh/HMEIPostdoc/research/SomIDPModel/data"
 # Office PC directory
-# dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
+ dir.data <- "C:/Users/Woi Sok Oh/Documents/Sourcetree/SomERGM/data"
 fls <- dir_ls(dir.data)
 fls <- fls |> str_subset("idp")
 out <- map(fls, read_csv, skip = 1, col_names = 1:74)
